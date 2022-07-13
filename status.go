@@ -57,7 +57,7 @@ func machineRoutine(status chan<- string) {
 }
 
 
-func getStatus(app *tview.Application) *tview.Flex {
+func getStatusUI(app *tview.Application) *tview.Flex {
     createTV := func(align int) *tview.TextView {
         return tview.NewTextView().SetDynamicColors(true).SetWrap(false).SetTextAlign(align).SetChangedFunc(func() {
             app.Draw()
