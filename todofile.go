@@ -21,18 +21,16 @@ func (todo *Todo) readTodos() {
     }
     todo.todos = nil
     for _, line := range strings.Split(string(file), "\n") {
-        item := new(TodoItem)
         details := strings.Split(line, ",")
         if len(details) < 2 {
             continue
         }
-        item.task = details[0]
-        ts, et := strconv.ParseInt(details[1], 10, 64)
-        item.timestamp = time.Unix(ts, 0)
-        if et != nil {
-            item.timestamp = time.Now()
+        unix, parseErr := strconv.ParseInt(details[1], 10, 64)
+        ts := time.Unix(unix, 0)
+        if parseErr != nil {
+            ts = time.Now()
         }
-        todo.todos = append(todo.todos, item)
+        todo.appendTodo(details[0], ts)
     }
 }
 

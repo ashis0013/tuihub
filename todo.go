@@ -33,6 +33,13 @@ func (todo *Todo) init(app *tview.Application) {
     todo.app = app
 }
 
+func (todo *Todo) appendTodo(task string, ts time.Time) {
+    item := new(TodoItem)
+    item.task = task
+    item.timestamp = ts
+    todo.todos = append(todo.todos, item)
+}
+
 func toggleInput(app *tview.Application, redundant bool, focusable tview.Primitive, update func()) {
     if redundant {
         return
@@ -50,13 +57,12 @@ func (todo *Todo) openInput() {
 
 func (todo *Todo) closeInput() {
     toggleInput(todo.app, todo.ui.GetItemCount() == 1, todo.list, func() {
-        item := new(TodoItem)
-        item.task = todo.input.GetText()
-        item.timestamp = time.Now()
-        todo.todos = append(todo.todos, item)
-        todo.list.AddItem(item.task, "", ' ', nil)
-        todo.syncBack()
-        todo.input.SetText("")
+        if (todo.input.GetText() != "") {
+            todo.appendTodo(todo.input.GetText(), time.Now())
+            todo.list.AddItem(todo.todos[len(todo.todos)-1].task, "", ' ', nil)
+            todo.syncBack()
+            todo.input.SetText("")
+        }
         todo.ui.RemoveItem(todo.input)
     })
 }
