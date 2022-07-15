@@ -6,20 +6,22 @@ import (
 )
 
 func getTUI(app *tview.Application) *tview.Flex {
-    todoUI := getTodo(app)
+    todo := getTodo(app)
 
     app.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
         switch(event.Key()) {
         case tcell.KeyCtrlN:
-            todoUI.openInput()
+            todo.openInput()
         case tcell.KeyEnter:
-            todoUI.closeInput()
+            todo.closeInput()
+        case tcell.KeyCtrlSpace:
+            todo.completeTask()
         }
         return event
     })
 
     return tview.NewFlex().SetDirection(tview.FlexRow).AddItem(
-        todoUI.ui, 0, 1, true,
+        todo.ui, 0, 1, true,
     ).AddItem(
         getStatusUI(app), 1, 1, false,
     )

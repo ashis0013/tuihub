@@ -1,18 +1,30 @@
 package main
 
 import (
+	"time"
+
 	"github.com/rivo/tview"
 )
+
+type TodoItem struct {
+    task string
+    timestamp time.Time
+}
 
 type Todo struct {
     list *tview.List
     input *tview.InputField
     ui *tview.Flex
     app *tview.Application
+    todos []*TodoItem
 }
 
 func (todo *Todo) init(app *tview.Application) {
-    todo.list = tview.NewList().AddItem("bruh", "", 'o', nil).AddItem("nuh", "", 'o', nil)
+    todo.readTodos()
+    todo.list = tview.NewList()
+    for _, item := range todo.todos {
+        todo.list.AddItem(item.task, "", ' ', nil)
+    }
     todo.input = tview.NewInputField()
 
     todo.ui = tview.NewFlex().SetDirection(tview.FlexRow).AddItem(
@@ -38,13 +50,27 @@ func (todo *Todo) openInput() {
 
 func (todo *Todo) closeInput() {
     toggleInput(todo.app, todo.ui.GetItemCount() == 1, todo.list, func() {
+        item := new(TodoItem)
+        item.task = todo.input.GetText()
+        item.timestamp = time.Now()
+        todo.todos = append(todo.todos, item)
+        todo.list.AddItem(item.task, "", ' ', nil)
+        todo.syncBack()
+        todo.input.SetText("")
         todo.ui.RemoveItem(todo.input)
     })
 }
 
+func (todo *Todo) completeTask() {
+    index := todo.list.GetCurrentItem()
+    todo.list.RemoveItem(index)
+    todo.todos = append(todo.todos[:index], todo.todos[index+1:]...)
+    todo.syncBack()
+}
+
 func getTodo(app *tview.Application) *Todo {
-    var todo Todo
+    todo := new(Todo)
     todo.init(app)
 
-    return &todo
+    return todo
 }
