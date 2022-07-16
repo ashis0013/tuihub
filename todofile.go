@@ -39,7 +39,7 @@ func (todo *Todo) syncBack() {
     filepath := fmt.Sprintf("%s/.config/tuihub/todo.csv", home)
     content := ""
     for _, item := range todo.todos {
-        content = fmt.Sprintf("%s%s,%v\n", content, item.task, item.timestamp)
+        content = fmt.Sprintf("%s%s,%v\n", content, item.task, item.timestamp.Unix())
     }
     err := ioutil.WriteFile(filepath, []byte(content), 0644)
     if err != nil {

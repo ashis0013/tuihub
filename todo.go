@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/rivo/tview"
@@ -23,7 +24,13 @@ func (todo *Todo) init(app *tview.Application) {
     todo.readTodos()
     todo.list = tview.NewList()
     for _, item := range todo.todos {
-        todo.list.AddItem(item.task, "", ' ', nil)
+        ch := ' '
+        text := item.task
+        if time.Now().Day() != item.timestamp.Day() || time.Now().Sub(item.timestamp).Hours() > 24.0 {
+            ch = 'o'
+            text = fmt.Sprintf("[:red]%s[:black]", text)
+        }
+        todo.list.AddItem(text, "", ch, nil)
     }
     todo.input = tview.NewInputField()
 
