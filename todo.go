@@ -34,8 +34,13 @@ func (todo *Todo) init(app *tview.Application) {
     }
     todo.input = tview.NewInputField()
 
-    todo.ui = tview.NewFlex().SetDirection(tview.FlexRow).AddItem(
-        todo.list, 0, 1, true,
+    todo.ui = tview.NewFlex().SetDirection(tview.FlexRow)
+    todo.ui.AddItem(
+        func() tview.Primitive {
+            if len(todo.todos) == 0 {return EmptyView()}
+            return todo.list
+        }(),
+        0, 1, true,
     )
     todo.app = app
 }
@@ -64,12 +69,19 @@ func (todo *Todo) openInput() {
 
 func (todo *Todo) closeInput() {
     toggleInput(todo.app, todo.ui.GetItemCount() == 1, todo.list, func() {
-        if (todo.input.GetText() != "") {
-            todo.appendTodo(todo.input.GetText(), time.Now())
-            todo.list.AddItem(todo.todos[len(todo.todos)-1].task, "", ' ', nil)
-            todo.syncBack()
-            todo.input.SetText("")
+        if (todo.input.GetText() == "") {
+            todo.ui.RemoveItem(todo.input)
+            return
         }
+        isFirst := len(todo.todos) == 0
+        todo.appendTodo(todo.input.GetText(), time.Now())
+        todo.syncBack()
+        todo.input.SetText("")
+        if isFirst {
+            todo.ui.Clear()
+            todo.ui.AddItem(todo.list, 0, 1, true)
+        }
+        todo.list.AddItem(todo.todos[len(todo.todos)-1].task, "", ' ', nil)
         todo.ui.RemoveItem(todo.input)
     })
 }
@@ -79,6 +91,10 @@ func (todo *Todo) completeTask() {
     todo.list.RemoveItem(index)
     todo.todos = append(todo.todos[:index], todo.todos[index+1:]...)
     todo.syncBack()
+    if len(todo.todos) == 0 {
+        todo.ui.Clear()
+        todo.ui.AddItem(EmptyView(), 0, 1, true)
+    }
 }
 
 func getTodo(app *tview.Application) *Todo {
