@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"time"
-    "strings"
 
+	"github.com/distatus/battery"
 	"github.com/rivo/tview"
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/mem"
@@ -41,17 +42,17 @@ func machineRoutine(status chan<- string) {
     writerRoutine(status, 2 * time.Second, func() string {
         cpuP, _ := cpu.Percent(time.Second, false)
         v, _ := mem.VirtualMemory()
+        b, _ := battery.Get(0)
         bgColor := "darkmagenta"
         if v.UsedPercent > 70.0 || cpuP[0] > 55.0 {
             bgColor = "red"
         }
         return fmt.Sprintf(
-            "[:%s]cpu: %.2f%%  ram: %.2f%% Total: %.2f GB, Free:%.2f GB",
+            "[:%s]cpu: %.2f%%  ram: %.2f%%  battery: %.2f%%",
             bgColor,
             cpuP[0],
             v.UsedPercent,
-            bytesToGB(v.Total),
-            bytesToGB(v.Used),
+            b.Current/b.Full*100,
         )
     })
 }

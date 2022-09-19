@@ -3,6 +3,7 @@ module github.com/ashis0013/tuihub
 go 1.17
 
 require (
+	github.com/distatus/battery v0.10.0
 	github.com/gdamore/tcell/v2 v2.4.1-0.20210905002822-f057f0a857a1
 	github.com/rivo/tview v0.0.0-20220709181631-73bf2902b59a
 	github.com/shirou/gopsutil v3.21.11+incompatible
@@ -21,4 +22,5 @@ require (
 	golang.org/x/sys v0.0.0-20220128215802-99c3d69c2c27 // indirect
 	golang.org/x/term v0.0.0-20210220032956-6a3ed077a48d // indirect
 	golang.org/x/text v0.3.6 // indirect
+	howett.net/plist v0.0.0-20181124034731-591f970eefbb // indirect
 )
