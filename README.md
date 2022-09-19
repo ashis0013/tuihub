@@ -8,4 +8,4 @@ and for machine usage details gopsutil is used.
 
 Here is how it looks
 
-<img width="640" alt="tuihub" src="https://user-images.githubusercontent.com/31564734/181789690-3d4c6617-39f0-442f-85a6-9b2aea16863f.png">
+![demo](https://user-images.githubusercontent.com/31564734/190968677-bf16c2ff-c4a5-4f0d-b763-319f89186a02.png)
