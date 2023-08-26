@@ -14,14 +14,16 @@ type TodoItem struct {
 }
 
 type Todo struct {
-	list  *tview.List
-	input *tview.InputField
-	ui    *tview.Flex
-	app   *tview.Application
-	todos []*TodoItem
+	list    *tview.List
+	input   *tview.InputField
+	ui      *tview.Flex
+	app     *tview.Application
+	todos   []*TodoItem
+	isInput bool
 }
 
 func (todo *Todo) init(app *tview.Application) {
+	todo.isInput = false
 	todo.readTodos()
 	todo.list = tview.NewList()
 	todo.list.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
@@ -63,6 +65,10 @@ func (todo *Todo) MoveDown() {
 	todo.list.SetCurrentItem((todo.list.GetCurrentItem() + 1) % todo.list.GetItemCount())
 }
 
+func (todo *Todo) IsInputOpen() bool {
+	return todo.isInput
+}
+
 func (todo *Todo) appendTodo(task string, ts time.Time) {
 	item := new(TodoItem)
 	item.task = task
@@ -81,6 +87,7 @@ func toggleInput(app *tview.Application, redundant bool, focusable tview.Primiti
 
 func (todo *Todo) openInput() {
 	toggleInput(todo.app, todo.ui.GetItemCount() > 1, todo.input, func() {
+		todo.isInput = true
 		todo.ui.AddItem(todo.input, 1, 1, false)
 	})
 }
@@ -89,6 +96,7 @@ func (todo *Todo) closeInput() {
 	toggleInput(todo.app, todo.ui.GetItemCount() == 1, todo.list, func() {
 		if todo.input.GetText() == "" {
 			todo.ui.RemoveItem(todo.input)
+			todo.isInput = false
 			return
 		}
 		isFirst := len(todo.todos) == 0
@@ -101,6 +109,7 @@ func (todo *Todo) closeInput() {
 		}
 		todo.list.AddItem(todo.todos[len(todo.todos)-1].task, "", ' ', nil)
 		todo.ui.RemoveItem(todo.input)
+		todo.isInput = false
 	})
 }
 

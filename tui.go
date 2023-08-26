@@ -23,7 +23,9 @@ func getTUI(app *tview.Application, status bool) *tview.Flex {
 			case 'k':
 				todo.MoveUp()
 			case ' ':
-				todo.completeTask()
+				if !todo.IsInputOpen() {
+					todo.completeTask()
+				}
 			}
 		}
 		return event
