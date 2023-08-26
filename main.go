@@ -1,14 +1,18 @@
 package main
 
 import (
-    "github.com/rivo/tview"
+	"flag"
+
+	"github.com/rivo/tview"
 )
 
 func main() {
-    app := tview.NewApplication()
-    ui := getTUI(app)
+	status := flag.Bool("stat", false, "Adds a status bar at the bottom")
+	flag.Parse()
+	app := tview.NewApplication()
+	ui := getTUI(app, *status)
 
-    if err := app.SetRoot(ui, true).SetFocus(ui).Run(); err != nil {
+	if err := app.SetRoot(ui, true).SetFocus(ui).Run(); err != nil {
 		panic(err)
 	}
 }
