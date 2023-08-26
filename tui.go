@@ -12,10 +12,19 @@ func getTUI(app *tview.Application, status bool) *tview.Flex {
 		switch event.Key() {
 		case tcell.KeyCtrlN:
 			todo.openInput()
-		case tcell.KeyEnter:
+		case tcell.KeyEnter, tcell.KeyEsc:
 			todo.closeInput()
-		case tcell.KeyCtrlSpace:
-			todo.completeTask()
+		case tcell.KeyRune:
+			switch event.Rune() {
+			case 'q':
+				app.Stop()
+			case 'j':
+				todo.MoveDown()
+			case 'k':
+				todo.MoveUp()
+			case ' ':
+				todo.completeTask()
+			}
 		}
 		return event
 	})
