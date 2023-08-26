@@ -6,7 +6,7 @@ import (
 	"github.com/rivo/tview"
 )
 
-func main() {
+func mai() {
 	status := flag.Bool("stat", false, "Adds a status bar at the bottom")
 	flag.Parse()
 	app := tview.NewApplication()
