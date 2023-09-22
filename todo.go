@@ -121,6 +121,8 @@ func (todo *Todo) completeTask() {
 	if len(todo.todos) == 0 {
 		todo.ui.Clear()
 		todo.ui.AddItem(EmptyView(), 0, 1, true)
+	} else {
+		todo.list.SetCurrentItem(0)
 	}
 }
 
